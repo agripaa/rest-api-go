@@ -17,22 +17,19 @@ func main() {
 		log.Fatal("DB Connection Error")
 	}
 
-	router := gin.Default()
-
 	db.AutoMigrate(&book.Book{})
 
 	bookRepository := book.NewRepository(db)
+	bookService := book.NewService(bookRepository)
 
-	book := book.Book{
-		Title:       "Buku Masak",
-		Description: "Masak itu asik loh",
-		Price:       90000,
-		Rating:      4,
-		Discount:    0,
+	bookRequest := book.BookRequest{
+		Title: "Buku Masak",
+		Price: "90000",
 	}
 
-	bookRepository.Create(book)
+	bookService.Create(bookRequest)
 
+	router := gin.Default()
 	v1 := router.Group("/v1")
 
 	v1.GET("/", handler.RootHandler)
