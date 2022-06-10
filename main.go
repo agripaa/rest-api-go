@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"rest-api-golang/book"
 	"rest-api-golang/handler"
@@ -21,62 +20,18 @@ func main() {
 	router := gin.Default()
 
 	db.AutoMigrate(&book.Book{})
-	// CRUD
 
-	// CREATE data
-	// book := book.Book{}
-	// book.Title = "Ngoding itu asik"
-	// book.Price = 30000
-	// book.Rating = 4
-	// book.Discount = 15
-	// book.Description = "Buku yang mengulas tentang programming dari basic sampai menengah"
+	bookRepository := book.NewRepository(db)
 
-	// err = db.Create(&book).Error
-	// if err != nil {
-	// 	fmt.Println("==========================")
-	// 	fmt.Println("Error Creating Book Record")
-	// 	fmt.Println("==========================")
-	// }
-
-	// Read data
-	var books []book.Book
-	err = db.Debug().Where("id = ?", 1).First(&books).Error
-	if err != nil {
-		fmt.Println("==========================")
-		fmt.Println("Error finding Book Record")
-		fmt.Println("==========================")
-	}
-	for _, b := range books {
-		fmt.Println("Title : ", b.Title)
-		fmt.Printf("Book Object %v", b)
+	book := book.Book{
+		Title:       "Buku Masak",
+		Description: "Masak itu asik loh",
+		Price:       90000,
+		Rating:      4,
+		Discount:    0,
 	}
 
-	// Update Data
-	var book book.Book
-	err = db.Debug().Where("id = ?", 1).First(&book).Error
-
-	book.Title = "Man Ringer (Revised edition)"
-	err = db.Save(&book).Error
-	if err != nil {
-		fmt.Println("==========================")
-		fmt.Println("Error updating Book Record")
-		fmt.Println("==========================")
-	}
-
-	// Delete Data
-	err = db.Debug().Where("id = ?", 1).First(&book).Error
-	if err != nil {
-		fmt.Println("==========================")
-		fmt.Println("Error finding Book Record")
-		fmt.Println("==========================")
-	}
-
-	err = db.Delete(&book).Error
-	if err != nil {
-		fmt.Println("==========================")
-		fmt.Println("Error deleting Book Record")
-		fmt.Println("==========================")
-	}
+	bookRepository.Create(book)
 
 	v1 := router.Group("/v1")
 
